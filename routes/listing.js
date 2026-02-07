@@ -12,8 +12,6 @@ router.use((req, res, next) => {
 
 
 const validateListing = (req, res, next) => {
-    console.log("REQ.BODY =", req.body);
-    console.log("REQ.BODY.LISTING =", req.body?.listing);
 
     const { error } = listingJoiSchema.validate(req.body);
     if (error) {
