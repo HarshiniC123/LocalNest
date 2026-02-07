@@ -1,0 +1,55 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+
+    <form method="post" class="needs-validation" enctype="multipart/form-data" action="/listings" novalidate>
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" id="title" class="form-control" name="listing[title]" placeholder="Enter Title" required>
+        <div class="invalid-feedback">
+        Title is required.
+        </div>
+        <br>
+
+        <label for="description" class="form-label">Description:</label>
+        <textarea id="description" name="listing[description]" class="form-control" placeholder="Enter Description" required></textarea>
+        <div class="invalid-feedback">
+        Description is required.
+        </div>
+        <br>
+        
+        <label for="image" class="form-label">Image URL:</label>
+        <input type="text" id="image" name="listing[image][url]" class="form-control" placeholder="Enter Image URL" >
+        
+        <br>
+
+        <label for="price" class="form-label">Price (per night):</label>
+        <input  type="number" id="price" name="listing[price]" class="form-control" placeholder="Enter Price" required>
+        <div class="invalid-feedback">
+        Price is required.
+        </div>
+        <br>
+         
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="location" class="form-label">Location:</label>
+                <input type="text" id="location" name="listing[location]" class="form-control" placeholder="Enter Location" required>
+                <div class="invalid-feedback">
+                Location is required.
+                </div>
+                <br>
+            </div>
+            <div class="col-sm-6">
+                <label for="country" class="form-label">Country:</label>
+                <input type="text" id="country" name="listing[country]" class="form-control" placeholder="Enter Country" required>
+                <div class="invalid-feedback">
+                Country is required.
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Create Listing</button>
+        
+    </form>
+
+</div>
+</div>
