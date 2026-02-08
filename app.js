@@ -6,6 +6,8 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
+const session = require('express-session');
+const flash = require('connect-flash');
 
 app.engine("ejs",ejsMate);
 app.set("view engine","ejs");
@@ -14,6 +16,26 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')));
+
+const sessionOptions ={
+    secret :"mysecretkey",
+    resave : false,
+    saveUninitialized : true,
+    cookie :{
+        expires : Date.now() + 1000*60*60*24*7,
+        maxAge : 1000*60*60*24*7,
+        httpOnly : true
+    },
+};
+
+app.use(session(sessionOptions));
+app.use(flash());
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
+
 app.use("/listings",listingRoutes);
 app.use("/listings/:id/reviews",reviewRoutes);
 

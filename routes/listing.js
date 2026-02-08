@@ -38,6 +38,10 @@ router.get("/new",(req,res)=>{
 router.get("/:id",wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const listing = await Listing.findById(id).populate("reviews");
+    if(!listing){
+        req.flash("error", "Cannot find that listing!");
+        return res.redirect("/listings");
+    }
     res.render("listings/show.ejs",{listing});
 }));
 
@@ -50,6 +54,7 @@ router.post(
     const newListing = new Listing(req.body.listing);
 
     await newListing.save();
+    req.flash("success", "Successfully created a new listing!");
     res.redirect("/listings");
   })
 );
@@ -77,7 +82,7 @@ router.put(
         new: true
       }
     );
-
+    req.flash("success", "Successfully updated the listing!");
     res.redirect(`/listings/${updatedListing._id}`);
   })
 );
@@ -87,6 +92,7 @@ router.put(
 router.delete("/:id",wrapAsync(async(req,res)=>{
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
+    req.flash("success", "Successfully deleted the listing!");
     res.redirect("/listings");
     
 }));
