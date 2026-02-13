@@ -8,6 +8,9 @@ const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user.js');
 
 app.engine("ejs",ejsMate);
 app.set("view engine","ejs");
@@ -30,6 +33,14 @@ const sessionOptions ={
 
 app.use(session(sessionOptions));
 app.use(flash());
+
+app.use(passport.initialize()); //this is to initialize passport
+app.use(passport.session()); //this is to use passport sessions
+passport.use(new LocalStrategy(User.authenticate())); //this is to use the local strategy for authentication, and we are using the authenticate method provided by passport-local-mongoose
+
+passport.serializeUser(User.serializeUser()); //serialize means to store the user in the session, we use this when the user logs in, and this is useful when we want to store the user in the session.
+passport.deserializeUser(User.deserializeUser()); //this is to deserialize the user, and we are using the deserializeUser method provided by passport-local-mongoose
+
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
@@ -61,6 +72,13 @@ app.listen(3000,()=>{
 app.get("/",(req,res)=>{
     res.send("Hi I am root page");
 });
+
+// app.get("/fakeUser",async(req,res)=>{
+//     const fakeuser = new User({email:"fakeuser@example.com",username:"fakeuser"});
+//     const newUser = await User.register(fakeuser,"password"); //register automatically checks if the username is already taken, and if not, it hashes the password and saves the user to the database.
+//     console.log(newUser);
+//     res.send(newUser); 
+// });
 
 //Middlewares
 
