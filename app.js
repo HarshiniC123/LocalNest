@@ -4,13 +4,15 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
-const listingRoutes = require("./routes/listing.js");
-const reviewRoutes = require("./routes/review.js");
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user.js');
+
+const listingRoutes = require("./routes/listing.js");
+const reviewRoutes = require("./routes/review.js");
+const userRoutes = require("./routes/user.js");
 
 app.engine("ejs",ejsMate);
 app.set("view engine","ejs");
@@ -49,6 +51,7 @@ app.use((req,res,next)=>{
 
 app.use("/listings",listingRoutes);
 app.use("/listings/:id/reviews",reviewRoutes);
+app.use("/",userRoutes);
 
 const mongoose = require('mongoose');
 const mongo_url="mongodb://127.0.0.1:27017/wanderlust";
