@@ -28,7 +28,21 @@ router.get("/new",isLoggedIn,(req,res)=>{
 //show route
 router.get("/:id",wrapAsync(async(req,res)=>{
     const { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
+    // populate listing owner and each review's author so template can access author.username
+    const listing = await Listing.findById(id)
+        .populate("owner")
+        .populate({
+            path: "reviews",
+            populate: { path: "author" }
+        });
+    // ensure every review has an author object for the template
+    if (listing && listing.reviews) {
+        listing.reviews.forEach(r => {
+            if (!r.author) {
+                r.author = { username: 'Anonymous' };
+            }
+        });
+    }
     if(!listing){
         req.flash("error", "Cannot find that listing!");
         return res.redirect("/listings");

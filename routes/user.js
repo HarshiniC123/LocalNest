@@ -32,7 +32,9 @@ router.post("/signup", wrapAsync(async (req, res, next) => {
 }));
 
 router.get("/login",(req,res)=>{
-    res.render("users/login.ejs");
+    // forward any redirect query to template so the form can keep it
+    const redirectUrl = req.query.redirect;
+    res.render("users/login.ejs", { redirectUrl });
 });
 
 router.post("/login",
@@ -43,7 +45,19 @@ router.post("/login",
     }),
     (req,res)=>{
         req.flash("success","Welcome back!");
-        res.redirect(res.locals.redirectUrl || "/listings");
+        // prefer explicit redirect passed via form, then saved session url, fallback to listings
+        let redirectUrl = req.body.redirect || res.locals.redirectUrl || "/listings";
+        // clear any saved session redirect so it doesn't linger
+        if (req.session.redirectUrl) {
+            delete req.session.redirectUrl;
+        }
+        // decode any encoded characters (including anchors)
+        try {
+            redirectUrl = decodeURIComponent(redirectUrl);
+        } catch (e) {
+            // ignore malformed
+        }
+        res.redirect(redirectUrl);
 });
 router.get("/logout",(req,res,next)=>{
     req.logout(function(err) {

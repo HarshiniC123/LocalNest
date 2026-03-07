@@ -3,16 +3,16 @@ const router = express.Router({mergeParams:true});
 const wrapAsync = require('../utils/wrapAsync.js');
 const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
-const {reviewJoiSchema} = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
-const {isLoggedIn} = require("../middleware.js");
-const {validateReview} = require("../middleware.js");
+const {isLoggedIn, validateReview} = require("../middleware.js");
 
 
-router.post("/",validateReview,wrapAsync(async(req,res)=>{
+router.post("/", isLoggedIn, validateReview, wrapAsync(async(req,res)=>{
     const { id } = req.params;
     const listing = await Listing.findById(id).populate("reviews");
     const newReview = new Review(req.body.review);
+    // attach current user as author
+    newReview.author = req.user._id;
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();

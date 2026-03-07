@@ -17,6 +17,9 @@
         Password is required.
         </div>
         <br>
+        <% if (typeof redirectUrl !== 'undefined' && redirectUrl) { %>
+            <input type="hidden" name="redirect" value="<%= redirectUrl %>">
+        <% } %>
         <button class="btn btn-success">Login</button>
         </form>
     </div>
