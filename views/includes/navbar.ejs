@@ -12,10 +12,12 @@
         
       </div>
       <div class="navbar-nav ms-auto">
+        <% if(!currentUser) { %>
         <a class="nav-link home" aria-current="page" href="/signup">sign up</a>
         <a class="nav-link all" href="/login"> log in</a>
+        <% } %> <% if(currentUser) { %>
         <a class="nav-link new" href="/logout">log out</a>
-        
+        <% } %>
       </div>
     </div>
   </div>

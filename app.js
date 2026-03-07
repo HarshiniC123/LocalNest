@@ -46,6 +46,7 @@ passport.deserializeUser(User.deserializeUser()); //this is to deserialize the u
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    res.locals.currentUser = req.user; //this is to make the current user available in all the templates, so that we can use it to show different options in the navbar based on whether the user is logged in or not.
     next();
 });
 
