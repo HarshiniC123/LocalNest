@@ -32,10 +32,21 @@ router.get("/login",(req,res)=>{
 });
 
 router.post("/login",
-    passport.authenticate("local",{failureRedirect:"/login",failureFlash:true}),
-    async(req,res)=>{
-        res.flash("success","Welcome to wanderlust,you are logged in");
+    passport.authenticate("local",{
+        failureRedirect:"/login",
+        failureFlash:true
+    }),
+    (req,res)=>{
+        req.flash("success","Welcome back!");
         res.redirect("/listings");
-})
+});
+
+router.get("/logout",(req,res)=>{
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        req.flash("success","Logged out successfully!");
+        res.redirect("/listings");
+    });
+});
 
 module.exports = router;
