@@ -15,7 +15,7 @@
         <li class="list-group-item">Country: <%= listing.country %></li>
     </ul>
 
-    <% if(currentUser && currentUser._id === listing.owner._id) { %>
+    <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
     <div class="card-body">
     <a href="/listings/<%= listing._id %>/edit"><button class="btn btn-primary">Edit</button></a>
     <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline;">

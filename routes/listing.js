@@ -6,6 +6,7 @@ const {listingJoiSchema} = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
 const {isLoggedIn, isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
+const listingController = require("../controllers/listings.js");
 
 router.use((req, res, next) => {
     console.log("ROUTER HIT:", req.method, req.originalUrl);
@@ -13,66 +14,23 @@ router.use((req, res, next) => {
 });
 
 //listings index route
-router.get("/",wrapAsync(async (req,res)=>{
-    const listings=await (Listing.find());
-
-    res.render("../views/listings/index.ejs",{listings});
-}));
+router.get("/",wrapAsync(listingController.index));
 
 //new route
-router.get("/new",isLoggedIn,(req,res)=>{
-    
-    res.render("listings/new.ejs");
-});
+router.get("/new",isLoggedIn,(listingController.new));
 
 //show route
-router.get("/:id",wrapAsync(async(req,res)=>{
-    const { id } = req.params;
-    // populate listing owner and each review's author so template can access author.username
-    const listing = await Listing.findById(id)
-        .populate("owner")
-        .populate({
-            path: "reviews",
-            populate: { path: "author" }
-        });
-    // ensure every review has an author object for the template
-    if (listing && listing.reviews) {
-        listing.reviews.forEach(r => {
-            if (!r.author) {
-                r.author = { username: 'Anonymous' };
-            }
-        });
-    }
-    if(!listing){
-        req.flash("error", "Cannot find that listing!");
-        return res.redirect("/listings");
-    }
-    console.log(listing);
-    res.render("listings/show.ejs",{listing});
-}));
+router.get("/:id",wrapAsync(listingController.show));
 
 //create route
 router.post(
   "/",
   validateListing,
-  wrapAsync(async (req, res) => {
-
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-
-    await newListing.save();
-    req.flash("success", "Successfully created a new listing!");
-    res.redirect("/listings");
-  })
+  wrapAsync(listingController.create)
 );
 
-
 //edit route
-router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs", { listing });
-}));
+router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));
 
 //update route
 router.put(
@@ -80,29 +38,11 @@ router.put(
   isLoggedIn,
   isOwner,
   validateListing,
-  wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    const updatedListing = await Listing.findByIdAndUpdate(
-      id,
-      req.body.listing,
-      {
-        runValidators: true,
-        new: true
-      }
-    );
-    req.flash("success", "Successfully updated the listing!");
-    res.redirect(`/listings/${updatedListing._id}`);
-  })
+  wrapAsync(listingController.update)
 );
 
 
 //delete route
-router.delete("/:id", isLoggedIn, isOwner, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    req.flash("success", "Successfully deleted the listing!");
-    res.redirect("/listings");
-}));
+router.delete("/:id", isLoggedIn, isOwner, wrapAsync(listingController.delete));
 
 module.exports = router;
