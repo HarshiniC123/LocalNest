@@ -13,36 +13,21 @@ router.use((req, res, next) => {
     next();
 });
 
-//listings index route
-router.get("/",wrapAsync(listingController.index));
+router
+  .route("/")
+  .get(wrapAsync(listingController.index))
+  .post(isLoggedIn,validateListing, wrapAsync(listingController.create));
 
 //new route
 router.get("/new",isLoggedIn,(listingController.new));
 
-//show route
-router.get("/:id",wrapAsync(listingController.show));
-
-//create route
-router.post(
-  "/",
-  validateListing,
-  wrapAsync(listingController.create)
-);
+router
+  .route("/:id")
+  .get(wrapAsync(listingController.show))
+  .delete(isLoggedIn, isOwner, wrapAsync(listingController.delete))
+  .put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.update));
 
 //edit route
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));
-
-//update route
-router.put(
-  "/:id",
-  isLoggedIn,
-  isOwner,
-  validateListing,
-  wrapAsync(listingController.update)
-);
-
-
-//delete route
-router.delete("/:id", isLoggedIn, isOwner, wrapAsync(listingController.delete));
 
 module.exports = router;
