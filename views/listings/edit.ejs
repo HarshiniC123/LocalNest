@@ -3,7 +3,8 @@
 <body>
   <div class="row">
     <div class="col-md-6 offset-md-3">
-    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="needs-validation" novalidate
+      enctype="multipart/form-data">
 
   <label for="title" class="form-label">Title:</label>
   <input type="text" name="listing[title]" class="form-control" value="<%= listing.title %>" required>
@@ -17,11 +18,18 @@
     Description is required.
   </div>
       <br>
-  <label for="image[url]" class="form-label">Image URL:</label>
+  <label for="image" class="form-label">Upload new image</label>
+  <!-- change name to plain "image" so multer handles it separately -->
+
+  <div class="mb-3">
+    previous image:
+    <br>
+    <img src="<%= originalImgUrl %>" alt="previous image" class="img-fluid">
+  </div>
+
   <input
-    type="text"
-    name="listing[image][url]" class="form-control"
-    value="<%= listing.image.url%>"
+    type="file"
+    name="image" class="form-control"
   >
   <br>
   <label for="price" class="form-label">Price (per night):</label>

@@ -6,6 +6,28 @@ const { listingJoiSchema, reviewJoiSchema } = require('./schema');
 
 const ExpressError = require('./utils/ExpressError');
 
+// helper to normalize flat body fields produced by multer when using
+// bracketed names such as "listing[title]".  multer doesn't automatically
+// nest these values, so we need to reconstruct the `listing` object before
+// validation or controller logic.
+module.exports.parseListingBody = (req, res, next) => {
+    if (req.body && !req.body.listing) {
+        const listingData = {};
+        for (const key in req.body) {
+            const match = key.match(/^listing\[(.+)\]$/);
+            if (match) {
+                listingData[match[1]] = req.body[key];
+                // remove the flat field to avoid confusion later
+                delete req.body[key];
+            }
+        }
+        if (Object.keys(listingData).length > 0) {
+            req.body.listing = listingData;
+        }
+    }
+    next();
+};
+
 module.exports.isLoggedIn = (req,res,next)=>{
     console.log(req.path," ",req.originalUrl);
     if(!req.isAuthenticated()){
@@ -23,7 +45,10 @@ module.exports.isLoggedIn = (req,res,next)=>{
 };
 
 module.exports.validateListing = (req, res, next) => {
-
+    // make sure the body is normalized before validating
+    if (req.body) {
+        module.exports.parseListingBody(req, res, () => {});
+    }
     const { error } = listingJoiSchema.validate(req.body);
     if (error) {
         let errMsg = error.details.map(el => el.message).join(",");

@@ -23,7 +23,8 @@ router
   .route("/")
   .get(wrapAsync(listingController.index))
   // .post(isLoggedIn,validateListing, wrapAsync(listingController.create));
-  .post(upload.single('listing[image]'),isLoggedIn,
+  // store the uploaded file under a simple field name to avoid bracket issues
+  .post(upload.single('image'), isLoggedIn,
   validateListing,
   wrapAsync(listingController.create));
 
@@ -34,7 +35,8 @@ router
   .route("/:id")
   .get(wrapAsync(listingController.show))
   .delete(isLoggedIn, isOwner, wrapAsync(listingController.delete))
-  .put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.update));
+  // upload a single file under the "image" field; parse the body before validating
+  .put(isLoggedIn, isOwner, upload.single('image'), validateListing, wrapAsync(listingController.update));
 
 //edit route
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));

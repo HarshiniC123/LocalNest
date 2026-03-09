@@ -40,6 +40,11 @@ module.exports.show = async(req,res)=>{
 };
 
 module.exports.create = async (req, res) => {
+  // parseListingBody middleware already ensures req.body.listing exists
+  if (!req.body || !req.body.listing) {
+    req.flash("error", "Invalid request data");
+    return res.redirect('/listings/new');
+  }
   const listing = new Listing(req.body.listing);
   listing.owner = req.user._id;
   if (req.file) {
@@ -56,11 +61,23 @@ module.exports.create = async (req, res) => {
 module.exports.edit = async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs", { listing });
+    let originalImgUrl = listing.image.url;
+    originalImgUrl = originalImgUrl.replace("/upload","/upload/h_300,w_250");
+    res.render("listings/edit.ejs", { listing, originalImgUrl });
 };
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
+    // req.body.listing should already be built by parseListingBody
+    if (!req.body || !req.body.listing) {
+        req.flash("error", "Invalid request data");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    let originalImgUrl = listing.image.url;
+    originalImgUrl = originalImgUrl.replace("/upload","/upload/h_300,w_250");
+
+    //use the above modified URL in the edit form to show the previous image at a smaller size, and allow the user to upload a new image if they want. If they do upload a new image, it will replace the old one; if not, the old image will remain unchanged.
     const updatedData = { ...req.body.listing };
     if (req.file) {
       updatedData.image = {
