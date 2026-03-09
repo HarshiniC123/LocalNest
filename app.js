@@ -59,10 +59,15 @@ app.use("/listings/:id/reviews",reviewRoutes);
 app.use("/",userRoutes);
 
 const mongoose = require('mongoose');
-const mongo_url="mongodb://127.0.0.1:27017/wanderlust";
+const password = process.env.ATLASDB_PASSWORD;
+const mongo_url = process.env.ATLASDB_URL.replace("password", process.env.ATLASDB_PASSWORD);
 async function main(){
     mongoose.connect(mongo_url);
 }
+
+console.log(process.env.ATLASDB_URL);
+console.log(process.env.ATLASDB_PASSWORD);
+console.log(mongo_url);
 
 main()
     .then(()=>{
