@@ -6,7 +6,7 @@ async function geocodeLocation(location) {
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`,
             {
                 headers: {
-                    'User-Agent': 'WanderLust-App'
+                    'User-Agent': 'LocalNest-App'
                 }
             }
         );

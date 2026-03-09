@@ -76,14 +76,6 @@ app.listen(3000,()=>{
     console.log("server working on localhost 3000");
 });
 
-//index route
-app.get("/",(req,res)=>{
-    res.send("hi this is the home page of wanderlust, a travel listing website. <a href='/listings'>Go to listings</a>");
-
-    //go to listings page
-    
-});
-
 // app.get("/fakeUser",async(req,res)=>{
 //     const fakeuser = new User({email:"fakeuser@example.com",username:"fakeuser"});
 //     const newUser = await User.register(fakeuser,"password"); //register automatically checks if the username is already taken, and if not, it hashes the password and saves the user to the database.

@@ -8,7 +8,7 @@ body{
 
 .navbar{
     height:4rem;
-    background-color: rgb(239, 248, 248) !important;
+    background-color: whitesmoke !important;
 }
 
 .no-hover:hover {
@@ -31,6 +31,10 @@ body{
     font-weight: 600;
     font-size: 1.1rem;
     transition: font-size 0.3s ease;
+}
+
+.input-group{
+    width: 250px;
 }
 
 
@@ -69,11 +73,17 @@ body{
     height: 200px !important;
     object-fit: cover;
     padding:7px 7px 0px 7px;
+    border-radius: 20px 20px 20px 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.listing-card:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-    box-shadow: 0 8px 8px grey;
+
+.listing-card{
+    border:none;
+    overflow: hidden; /* Prevents image from overflowing card boundaries */
+}
+.listing-card:hover .listing-img {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 
 .container {
@@ -140,6 +150,15 @@ body{
     background: none !important;
     border: none !important;
     box-shadow: none !important;
+}
+
+/* Search group styling for increased border radius */
+.search-group .form-control {
+    border-radius: 1rem 0 0 1rem !important;
+}
+
+.search-group .btn {
+    border-radius: 0 1rem 1rem 0 !important;
 }
 
 .custom-compass-icon i {

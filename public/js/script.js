@@ -31,7 +31,7 @@
     } else if (locationString) {
       // Fallback to geocoding with Nominatim
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationString)}&limit=1`, {
-        headers: { 'User-Agent': 'WanderLust-App' }
+        headers: { 'User-Agent': 'LocalNest-App' }
       })
         .then(res => res.json())
         .then(data => {
