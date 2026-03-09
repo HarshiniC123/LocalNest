@@ -8,7 +8,11 @@ const {isLoggedIn, isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+const {storage} = require("../cloudConfig.js");
+console.log("storage:",storage.constructor.name); // Check the type of storage
+const upload = multer({ storage });
+// const upload = multer({ dest: 'uploads/' })
 
 router.use((req, res, next) => {
     console.log("ROUTER HIT:", req.method, req.originalUrl);
@@ -19,10 +23,9 @@ router
   .route("/")
   .get(wrapAsync(listingController.index))
   // .post(isLoggedIn,validateListing, wrapAsync(listingController.create));
-  .post(upload.single('listing[image]'), (req, res) => {
-    res.send(req.file);
-    console.log(req.body);
-  });
+  .post(upload.single('listing[image]'),isLoggedIn,
+  validateListing,
+  wrapAsync(listingController.create));
 
 //new route
 router.get("/new",isLoggedIn,(listingController.new));

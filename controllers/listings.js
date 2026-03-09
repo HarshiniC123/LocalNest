@@ -40,14 +40,18 @@ module.exports.show = async(req,res)=>{
 };
 
 module.exports.create = async (req, res) => {
-
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-
-    await newListing.save();
-    req.flash("success", "Successfully created a new listing!");
-    res.redirect("/listings");
-  };
+  const listing = new Listing(req.body.listing);
+  listing.owner = req.user._id;
+  if (req.file) {
+    listing.image = {
+      url: req.file.path,
+      filename: req.file.filename
+    };
+  }
+  await listing.save();
+  req.flash('success','Successfully created a new listing!');
+  res.redirect('/listings');
+};
 
 module.exports.edit = async (req, res) => {
     const { id } = req.params;
@@ -57,8 +61,15 @@ module.exports.edit = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
-    const updatedListing = await Listing.findByIdAndUpdate(id
-        , { ...req.body.listing }, { new: true, runValidators: true });
+    const updatedData = { ...req.body.listing };
+    if (req.file) {
+      updatedData.image = {
+        url: req.file.path,
+        filename: req.file.filename
+      };
+    }
+    const updatedListing = await Listing.findByIdAndUpdate(id,
+        updatedData, { new: true, runValidators: true });
     req.flash("success", "Successfully updated the listing!");
     res.redirect(`/listings/${updatedListing._id}`);
 };
