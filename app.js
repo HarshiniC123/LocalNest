@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -74,7 +78,10 @@ app.listen(3000,()=>{
 
 //index route
 app.get("/",(req,res)=>{
-    res.send("Hi I am root page");
+    res.send("hi this is the home page of wanderlust, a travel listing website. <a href='/listings'>Go to listings</a>");
+
+    //go to listings page
+    
 });
 
 // app.get("/fakeUser",async(req,res)=>{

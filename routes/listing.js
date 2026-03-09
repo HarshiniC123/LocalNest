@@ -7,6 +7,8 @@ const ExpressError = require("../utils/ExpressError.js");
 const {isLoggedIn, isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 router.use((req, res, next) => {
     console.log("ROUTER HIT:", req.method, req.originalUrl);
@@ -16,7 +18,11 @@ router.use((req, res, next) => {
 router
   .route("/")
   .get(wrapAsync(listingController.index))
-  .post(isLoggedIn,validateListing, wrapAsync(listingController.create));
+  // .post(isLoggedIn,validateListing, wrapAsync(listingController.create));
+  .post(upload.single('listing[image]'), (req, res) => {
+    res.send(req.file);
+    console.log(req.body);
+  });
 
 //new route
 router.get("/new",isLoggedIn,(listingController.new));
