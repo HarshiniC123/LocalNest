@@ -15,6 +15,15 @@
         <li class="list-group-item">Country: <%= listing.country %></li>
     </ul>
 
+    <!-- map container with data attributes for coordinates and info -->
+    <div id="map" 
+         class="show-map mb-3" 
+         data-location="<%= listing.location %>"
+         data-latitude="<%= listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates[1] : '' %>"
+         data-longitude="<%= listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates[0] : '' %>"
+         data-title="<%= listing.title %>"
+         data-price="<%= listing.price %>"></div>
+
     <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
     <div class="card-body">
     <a href="/listings/<%= listing._id %>/edit"><button class="btn btn-primary">Edit</button></a>

@@ -1,6 +1,7 @@
 const Listing=require("../models/listing");
 const Review = require("../models/review");
 const { listingJoiSchema } = require("../schema");
+const { geocodeLocation } = require("../utils/geocoding");
 const ExpressError = require("../utils/ExpressError");
 
 
@@ -45,14 +46,29 @@ module.exports.create = async (req, res) => {
     req.flash("error", "Invalid request data");
     return res.redirect('/listings/new');
   }
+  
   const listing = new Listing(req.body.listing);
   listing.owner = req.user._id;
+  
+  // Geocode the location
+  const geoData = await geocodeLocation(listing.location);
+  if (geoData.success) {
+    listing.geometry = {
+      type: "Point",
+      coordinates: [geoData.longitude, geoData.latitude]
+    };
+  } else {
+    req.flash("error", `Could not find location: ${geoData.error}`);
+    return res.redirect('/listings/new');
+  }
+  
   if (req.file) {
     listing.image = {
       url: req.file.path,
       filename: req.file.filename
     };
   }
+  
   await listing.save();
   req.flash('success','Successfully created a new listing!');
   res.redirect('/listings');
@@ -74,17 +90,27 @@ module.exports.update = async (req, res) => {
         return res.redirect(`/listings/${id}`);
     }
 
-    let originalImgUrl = listing.image.url;
-    originalImgUrl = originalImgUrl.replace("/upload","/upload/h_300,w_250");
-
-    //use the above modified URL in the edit form to show the previous image at a smaller size, and allow the user to upload a new image if they want. If they do upload a new image, it will replace the old one; if not, the old image will remain unchanged.
     const updatedData = { ...req.body.listing };
+    
+    // Geocode the location if it was updated
+    const geoData = await geocodeLocation(updatedData.location);
+    if (geoData.success) {
+        updatedData.geometry = {
+            type: "Point",
+            coordinates: [geoData.longitude, geoData.latitude]
+        };
+    } else {
+        req.flash("error", `Could not find location: ${geoData.error}`);
+        return res.redirect(`/listings/${id}/edit`);
+    }
+    
     if (req.file) {
       updatedData.image = {
         url: req.file.path,
         filename: req.file.filename
       };
     }
+    
     const updatedListing = await Listing.findByIdAndUpdate(id,
         updatedData, { new: true, runValidators: true });
     req.flash("success", "Successfully updated the listing!");

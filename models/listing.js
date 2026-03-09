@@ -42,9 +42,20 @@ const listingSchema = new mongoose.Schema({
     owner : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User"
+    },
+    geometry : {
+        type : {
+            type : String,
+            enum : ["Point"]
+        },
+        coordinates : {
+            type : [Number]
+        }
     }
 });
 
+// Set geometry index for geospatial queries
+listingSchema.index({ "geometry" : "2dsphere" });
 
 //mongoose middleware to delete all reviews associated with a listing when the listing is deleted
 listingSchema.post("findOneAndDelete",async (listing)=>{
