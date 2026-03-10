@@ -17,10 +17,10 @@
 
       <div class="navbar-nav">
         <a class="nav-link new" href="/listings/new">Become a Host</a>
-        <% if(!currentUser) { %>
+        <% if(!locals.currentUser) { %>
         <a class="nav-link home" aria-current="page" href="/signup"><b>Sign Up</b></a>
         <a class="nav-link all" href="/login"> <b>Log In</b></a>
-        <% } %> <% if(currentUser) { %>
+        <% } %> <% if(locals.currentUser) { %>
         <a class="nav-link new" href="/logout">log out</a>
         <% } %>
       </div>

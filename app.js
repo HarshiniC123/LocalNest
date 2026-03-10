@@ -57,20 +57,22 @@ const sessionOptions ={
 app.use(session(sessionOptions));
 app.use(flash());
 
-app.use(passport.initialize()); //this is to initialize passport
-app.use(passport.session()); //this is to use passport sessions
-passport.use(new LocalStrategy(User.authenticate())); //this is to use the local strategy for authentication, and we are using the authenticate method provided by passport-local-mongoose
+app.use(passport.initialize());
+app.use(passport.session());
 
-passport.serializeUser(User.serializeUser()); //serialize means to store the user in the session, we use this when the user logs in, and this is useful when we want to store the user in the session.
-passport.deserializeUser(User.deserializeUser()); //this is to deserialize the user, and we are using the deserializeUser method provided by passport-local-mongoose
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
+/* IMPORTANT MIDDLEWARE */
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
-    res.locals.currentUser = req.user; //this is to make the current user available in all the templates, so that we can use it to show different options in the navbar based on whether the user is logged in or not.
+    res.locals.currentUser = req.user;
     next();
 });
 
+/* ROUTES AFTER THIS */
 app.use("/listings",listingRoutes);
 app.use("/listings/:id/reviews",reviewRoutes);
 app.use("/",userRoutes);
@@ -79,7 +81,7 @@ const mongoose = require('mongoose');
 const password = process.env.ATLASDB_PASSWORD;
 const mongo_url = process.env.ATLASDB_URL.replace("password", process.env.ATLASDB_PASSWORD);
 async function main(){
-    mongoose.connect(mongo_url);
+    await mongoose.connect(mongo_url);
 }
 
 console.log(process.env.ATLASDB_URL);
