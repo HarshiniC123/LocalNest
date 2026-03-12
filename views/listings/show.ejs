@@ -24,7 +24,7 @@
          data-title="<%= listing.title %>"
          data-price="<%= listing.price %>"></div>
 
-    <% if(locals.currentUser && locals.currentUser._id.equals(listing.owner._id)) { %>
+    <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
     <div class="card-body">
     <a href="/listings/<%= listing._id %>/edit"><button class="btn btn-primary">Edit</button></a>
     <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline;">
@@ -37,7 +37,7 @@
 </div>
 <hr>
 
-<% if(locals.currentUser) { %>
+<% if(currentUser) { %>
 <div id="reviews" class="col-md-8 offset-md-2">
     <h5>Give your review</h5>
     <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation">
