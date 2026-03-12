@@ -6,13 +6,21 @@
     <title>Wander Lust</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="/css/rating.css">
     <link rel="stylesheet" href="/css/rating.css"/>
     <!-- Leaflet map library -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body >
     <%- include("../includes/navbar.ejs") %>
+    <%if( path === "/listings" || path === "/listings/:id" ) { %>
+        <%- include("../includes/categories.ejs") %>
+    <% } %>
+
     <main class="flex-grow-1">
     <div class="container">
         <%- include("../includes/flash.ejs") %>
