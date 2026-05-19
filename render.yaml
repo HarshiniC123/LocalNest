@@ -17,7 +17,10 @@ services:
         value: 10000
 
       # Add these manually in Render Dashboard
-      - key: MONGO_URI
+      - key: ATLASDB_URL
+        sync: false
+
+      - key: ATLASDB_PASSWORD
         sync: false
 
       - key: SESSION_SECRET

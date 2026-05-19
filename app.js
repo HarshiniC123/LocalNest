@@ -98,8 +98,9 @@ main()
         console.log("Failed to connect to db",err);
     });
 
-app.listen(3000,()=>{
-    console.log("server working on localhost 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,()=>{
+    console.log(`server working on port ${PORT}`);
 });
 
 // app.get("/fakeUser",async(req,res)=>{
